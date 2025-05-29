@@ -22,13 +22,13 @@ from django.urls import path, include
 from rest_framework import routers
 
 # Local imports
-from localizacion.views import LocalizacionuserViewSet, TalleViewSet, ExpertoViewSet, proveedorViewSet, RepuestoViewSet
+from localizacion.views import LocalizacionuserViewSet, TallerViewSet, ExpertoViewSet, proveedorViewSet, RepuestoViewSet
 
 # Create a router and register our viewset with it.
 router = routers.DefaultRouter()
 
 router.register(r"localizaciones", LocalizacionuserViewSet)
-router.register(r"Talleres", TalleViewSet)
+router.register(r"Talleres", TallerViewSet)
 router.register(r"Expertos", ExpertoViewSet)
 router.register(r"proveedores", proveedorViewSet)
 router.register(r"Repuestos", RepuestoViewSet)

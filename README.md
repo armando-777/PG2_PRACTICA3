@@ -21,7 +21,7 @@ Preparada para integrarse en sistemas móviles, apps web, o paneles administrati
 
 ## Diagrama de modelos 
 
-![deagrama](image.png)
+![diagrama](image.png)
 
 ## Crear entorno virtual
 
@@ -202,6 +202,7 @@ Editar
 {"nombre": "Ana", "latitud": -33.4489, "longitud": -70.6693}
 GET /api/localizacionusers/{id}/, PUT, PATCH, DELETE funcionan igual que en otros endpoints.
 ```
+![localizacionusers](/imagenes/API-localizacion.png)
 ## 2. Talleres (/api/talleres/)
 Talleres de chapa y pintura registrados.
 ```bash
@@ -243,6 +244,7 @@ Editar
   "localizaciones": [1, 2]
 }
 ```
+![talleres](/imagenes/API-taller.png)
 ## 3. Expertos (/api/expertos/)
 Profesionales que trabajan con talleres.
 ```bash
@@ -282,6 +284,7 @@ Editar
   "talleres": [1, 2]
 }
 ```
+![expertos](/imagenes/API-experto.png)
 ## 4. Proveedores (/api/proveedors/)
 Proveedores de piezas para talleres.
 ```bash
@@ -323,6 +326,7 @@ Editar
   "repuestos": [1, 2]
 }
 ```
+![proveedores](/imagenes/API-proveedor.png)
 ## 5. Repuestos (/api/repuestos/)
 Piezas y componentes utilizados en los servicios.
 ```bash
@@ -362,6 +366,7 @@ Editar
   "proveedores": [1, 2]
 }
 ```
+![repuesto](/imagenes/API-repuesto.png)
 ## CASO DE USO: Asociar un Taller con un Usuario, un Experto y un Proveedor de Repuestos
 Objetivo
 Simular el flujo de creación y asociación de datos entre un usuario, un taller cercano, un experto en ese taller y un proveedor de repuestos con stock para ese taller.

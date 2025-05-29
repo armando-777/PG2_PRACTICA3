@@ -12,25 +12,23 @@ from localizacion.models import *
 
 
 class LocalizacionuserViewSet(viewsets.ModelViewSet):
-    queryset = Localizacionuser.objects.filter(
-        fecha_hora_matricula__lte=tz.localtime() - timedelta(minutes=1)
-    )
-    serializer_class = EstudianteSerializer
+    queryset = Localizacionuser.objects.all()
+    serializer_class = LocalizacionuserSerializer
 
 
-class TalleViewSet(viewsets.ModelViewSet):
+class TallerViewSet(viewsets.ModelViewSet):
     queryset = Taller.objects.all()
-    serializer_class = MateriaSerializer
+    serializer_class = TallerSerializer
     
 class ExpertoViewSet(viewsets.ModelViewSet):
     queryset = Experto.objects.all()
-    serializer_class = MateriaSerializer
+    serializer_class = ExpertoSerializer
 
 class proveedorViewSet(viewsets.ModelViewSet):
     queryset = proveedor.objects.all()
-    serializer_class = MateriaSerializer
+    serializer_class = proveedorSerializer
 
 class RepuestoViewSet(viewsets.ModelViewSet):
     queryset = Repuesto.objects.all()
-    serializer_class = MateriaSerializer
+    serializer_class = RepuestoSerializer
 
