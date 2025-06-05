@@ -3,7 +3,6 @@
 ## API de Localización de Talleres de Chapa y Pintura, Expertos en Vehículos y Proveedores de Repuestos
 Esta API permite localizar, consultar y administrar información sobre talleres especializados en chapa y pintura, expertos en tipos específicos de vehículos (como clásicos, eléctricos, 4x4, etc.) Y proveedores de repuestos automotrices, facilitando la conexión entre usuarios que necesitan servicios específicos y los profesionales más adecuados cerca de su ubicación.
 
-
 La API también gestiona información sobre proveedores de repuestos automotrices, permitiendo localizar distribuidores por cercanía, tipo de repuesto o marca.
 
 
@@ -15,7 +14,7 @@ Permite buscar expertos en categorías específicas de vehículos, con informaci
 
 Muestra detalles completos de cada taller o experto: ubicación exacta, contacto, servicios, tipos de vehículos atendidos, valoración y más.
 
-Incluye proveedores de repuestos, permitiendo consultar disponibilidad, marcas, tipos de repuestos y ubicación de los distribuidores
+Incluye proveedores de repuestos, permitiendo consultar disponibilidad, marcas, tipos de repuestos y ubicación de los distribuidores y precios.
 
 Preparada para integrarse en sistemas móviles, apps web, o paneles administrativos.
 
@@ -104,10 +103,12 @@ class Localizacionuser(models.Model):
     longitud = models.FloatField()
 
 class Taller(models.Model):
+    id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15)
     email = models.EmailField()
+    descripcion = models.TextField(default="Sin descripción") 
     latitud = models.FloatField()
     longitud = models.FloatField()
     localizaciones = models.ManyToManyField(Localizacionuser) 
@@ -117,11 +118,13 @@ class Experto(models.Model):
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15)
     email = models.EmailField()
+    descripcion = models.TextField(default="Sin descripción") 
     latitud = models.FloatField()
     longitud = models.FloatField()
     talleres = models.ManyToManyField(Taller) 
 
 class proveedor(models.Model):
+    id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15)
@@ -130,15 +133,15 @@ class proveedor(models.Model):
     longitud = models.FloatField()
     talleres = models.ManyToManyField(Taller) 
     repuestos = models.ManyToManyField('Repuesto') 
-
 class Repuesto(models.Model):
+    id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    direccion = models.CharField(max_length=255)
-    telefono = models.CharField(max_length=15)
-    email = models.EmailField()
-    latitud = models.FloatField()
-    longitud = models.FloatField()
+    modelo = models.CharField(max_length=255)
+    precio = models.CharField(max_length=15)
+    descripcion = models.TextField(default="Sin descripción")  
     proveedores = models.ManyToManyField(proveedor) 
+
+   
 
 ```
 
@@ -176,291 +179,102 @@ Proveedor   	/api/proveedor/	         GET, POST	    Listar o registrar proveedor
 Proveedor	    /api/proveedor/<id>/	 GET, PUT, DELETE	Consultar, actualizar o eliminar un proveedor específico
 Repuesto	    /api/repuesto/	         GET, POST	    Listar o registrar repuestos automotrices
 Repuesto	    /api/repuesto/<id>/	     GET, PUT, DELETE	Consultar, actualizar o eliminar un repuesto específico
+
+
+
 ```
 
 ## 1. Localización de Usuarios (/api/localizacionusers/)
-Ubicación geográfica de usuarios que buscan servicios.
-```bash
-GET /api/localizacionusers/
-```
-Descripción: Lista todas las localizaciones de usuarios.
+
+Registrar ubicaciones de usuarios que buscan servicio
+
 Ejemplo:
 ```bash
-json
-Copiar
-Editar
-[
-  {"id": 1, "nombre": "Carlos", "latitud": -34.6037, "longitud": -58.3816}
-]
+
 POST /api/localizacionusers/
+{
+  "nombre": "Mi ubicación",
+  "latitud": -34.6037,
+  "longitud": -58.3816
+}
 
-Body:
-
-json
-Copiar
-Editar
-{"nombre": "Ana", "latitud": -33.4489, "longitud": -70.6693}
-GET /api/localizacionusers/{id}/, PUT, PATCH, DELETE funcionan igual que en otros endpoints.
 ```
 ![localizacionusers](/imagenes/API-localizacion.png)
 ## 2. Talleres (/api/talleres/)
 Talleres de chapa y pintura registrados.
-```bash
-GET /api/talleres/
-```
+
 Descripción: Lista todos los talleres.
 
 Ejemplo:
 ```bash
-json
-Copiar
-Editar
-[
-  {
-    "id": 1,
-    "nombre": "Taller Don Pepe",
-    "direccion": "Av. Siempre Viva 742",
-    "telefono": "123456789",
-    "email": "donpepe@taller.com",
-    "latitud": -34.60,
-    "longitud": -58.38,
-    "localizaciones": [1]
-  }
-]
-POST /api/talleres/
-
-Body:
-
-json
-Copiar
-Editar
+GET /api/talleres/
 {
   "nombre": "Taller Rápido",
-  "direccion": "Calle 123",
-  "telefono": "0987654321",
-  "email": "rapido@taller.com",
-  "latitud": -34.61,
-  "longitud": -58.37,
-  "localizaciones": [1, 2]
+  "direccion": "Av. Libertador 123",
+  "telefono": "123456789",
+  "email": "contacto@rapido.com",
+  "latitud": -34.60,
+  "longitud": -58.38,
+  "localizaciones": [1]
 }
+
 ```
 ![talleres](/imagenes/API-taller.png)
 ## 3. Expertos (/api/expertos/)
 Profesionales que trabajan con talleres.
-```bash
-GET /api/expertos/
-```
+Descripción: Lista todos los talleres.
+
 Ejemplo:
 ```bash
-json
-Copiar
-Editar
-[
-  {
-    "id": 1,
-    "nombre": "Luis Gómez",
-    "direccion": "Calle Expertos 456",
-    "telefono": "1122334455",
-    "email": "luis@experto.com",
-    "latitud": -34.62,
-    "longitud": -58.36,
-    "talleres": [1]
-  }
-]
-POST /api/expertos/
-
-Body:
-
-json
-Copiar
-Editar
+GET /api/expertos/
 {
-  "nombre": "Laura Díaz",
-  "direccion": "Av. del Trabajo 789",
-  "telefono": "3344556677",
-  "email": "laura@experta.com",
-  "latitud": -34.63,
-  "longitud": -58.35,
-  "talleres": [1, 2]
+  "nombre": "Juan Pérez",
+  "direccion": "Calle Falsa 123",
+  "telefono": "1122334455",
+  "email": "juan@experto.com",
+  "descripcion": "Especialista en pintura y abolladuras",
+  "latitud": -34.59,
+  "longitud": -58.39,
+  "talleres": [1]
 }
+
 ```
 ![expertos](/imagenes/API-experto.png)
 ## 4. Proveedores (/api/proveedors/)
 Proveedores de piezas para talleres.
+
+Ejemplo:Lista todos los proveedores
 ```bash
 GET /api/proveedors/
-```
-Ejemplo:
-```bash
-json
-Copiar
-Editar
-[
-  {
-    "id": 1,
-    "nombre": "Autopartes SRL",
-    "direccion": "Ruta 40 Km 10",
-    "telefono": "456789123",
-    "email": "contacto@autopartes.com",
-    "latitud": -34.64,
-    "longitud": -58.34,
-    "talleres": [1],
-    "repuestos": [1]
-  }
-]
-POST /api/proveedors/
-
-Body:
-
-json
-Copiar
-Editar
 {
-  "nombre": "Distribuidora Nacional",
-  "direccion": "Av. Piezas 202",
-  "telefono": "321654987",
-  "email": "ventas@dnacional.com",
-  "latitud": -34.65,
-  "longitud": -58.33,
+  "nombre": "Repuestera S.A.",
+  "direccion": "Ruta 3 km 5",
+  "telefono": "1167891234",
+  "email": "ventas@repuestera.com",
+  "latitud": -34.61,
+  "longitud": -58.41,
   "talleres": [1],
-  "repuestos": [1, 2]
+  "repuestos": [1]
 }
+
 ```
 ![proveedores](/imagenes/API-proveedor.png)
 ## 5. Repuestos (/api/repuestos/)
 Piezas y componentes utilizados en los servicios.
-```bash
-GET /api/repuestos/
-```
+
 Ejemplo:
 ```bash
-json
-Copiar
-Editar
-[
-  {
-    "id": 1,
-    "nombre": "Paragolpes delantero",
-    "direccion": "Depósito Central",
-    "telefono": "123123123",
-    "email": "repuestos@fabrica.com",
-    "latitud": -34.66,
-    "longitud": -58.32,
-    "proveedores": [1]
-  }
-]
-POST /api/repuestos/
-
-Body:
-
-json
-Copiar
-Editar
+GET /api/repuestos/
 {
-  "nombre": "Espejo lateral",
-  "direccion": "Depósito Sur",
-  "telefono": "987987987",
-  "email": "stock@repuestossur.com",
-  "latitud": -34.67,
-  "longitud": -58.31,
-  "proveedores": [1, 2]
+  "nombre": "Capot",
+  "modelo": "Volkswagen Gol 2020",
+  "precio": "30000",
+  "descripcion": "Capot original pintado",
+  "proveedores": []
 }
+
 ```
 ![repuesto](/imagenes/API-repuesto.png)
-## CASO DE USO: Asociar un Taller con un Usuario, un Experto y un Proveedor de Repuestos
-Objetivo
-Simular el flujo de creación y asociación de datos entre un usuario, un taller cercano, un experto en ese taller y un proveedor de repuestos con stock para ese taller.
-```bash
-Flujo Paso a Paso:
-1. Crear una Localización de Usuario
-POST /api/localizacionusers/
-
-json
-Copiar
-Editar
-{
-  "nombre": "Usuario Cliente",
-  "latitud": -34.6037,
-  "longitud": -58.3816
-}
-```
-```bash
-2. Crear un Taller
-POST /api/talleres/
-
-json
-Copiar
-Editar
-{
-  "nombre": "Taller Solución Rápida",
-  "direccion": "Calle Rápida 100",
-  "telefono": "111222333",
-  "email": "solucion@taller.com",
-  "latitud": -34.6040,
-  "longitud": -58.3820,
-  "localizaciones": [1]
-}
-```
-```bash
-3. Registrar un Experto Asociado al Taller
-POST /api/expertos/
-
-json
-Copiar
-Editar
-{
-  "nombre": "Miguel Técnico",
-  "direccion": "Av. Técnica 999",
-  "telefono": "444555666",
-  "email": "miguel@experto.com",
-  "latitud": -34.6030,
-  "longitud": -58.3830,
-  "talleres": [1]
-}
-```
-```bash
-4. Crear un Repuesto
-POST /api/repuestos/
-
-json
-Copiar
-Editar
-{
-  "nombre": "Capó frontal",
-  "direccion": "Galpón Norte",
-  "telefono": "555444333",
-  "email": "ventas@repuestos.com",
-  "latitud": -34.6050,
-  "longitud": -58.3840
-}
-```
-```bash
-5. Registrar un Proveedor que ofrece ese Repuesto al Taller
-POST /api/proveedors/
-
-json
-Copiar
-Editar
-{
-  "nombre": "Suministros Express",
-  "direccion": "Ruta 7 Km 15",
-  "telefono": "999888777",
-  "email": "express@proveedores.com",
-  "latitud": -34.6060,
-  "longitud": -58.3850,
-  "talleres": [1],
-  "repuestos": [1]
-}
-```
-## Una aplicación cliente podría usar GET con filtros como:
-
-/api/talleres/?localizaciones=1 → Talleres cercanos al usuario
-
-/api/expertos/?talleres=1 → Expertos que trabajan en el taller
-
-/api/proveedors/?talleres=1 → Proveedores que surten a ese taller
-
-/api/repuestos/?proveedores=1 → Ver qué repuestos tiene disponible cada proveedor
 
 * Esta API permite a las aplicaciones externas no solo cargar la información de talleres de chapa y pintura, expertos en vehículos y proveedores de repuestos utilizando los endpoints POST, sino también realizar búsquedas y filtrados avanzados mediante los endpoints GET. Esto habilita la creación de herramientas complejas, como un buscador de talleres por ubicación o un sistema para encontrar repuestos específicos para un modelo de vehículo.
 
